@@ -10,7 +10,7 @@ using OrderService.Data;
 namespace OrderService.Migrations
 {
     [DbContext(typeof(OrderContext))]
-    [Migration("20231117120615_StartMigration")]
+    [Migration("20231121170505_StartMigration")]
     partial class StartMigration
     {
         /// <inheritdoc />
@@ -46,6 +46,9 @@ namespace OrderService.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CustomerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("NeedForDelivery")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("TotalPrice")

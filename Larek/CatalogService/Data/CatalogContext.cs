@@ -12,7 +12,8 @@ namespace CatalogService.Data
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
 		{
-			options.UseSqlite("Data Source=catalog.db");
+			Directory.CreateDirectory("..\\Db");
+			options.UseSqlite($"Data Source=..\\Db\\catalog.db");
 		}
 
 		public CatalogContext(DbContextOptions<CatalogContext> options)

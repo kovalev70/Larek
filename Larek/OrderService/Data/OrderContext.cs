@@ -13,7 +13,8 @@ namespace OrderService.Data
 
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
 		{
-			options.UseSqlite("Data Source=order.db");
+			Directory.CreateDirectory("..\\Db");
+			options.UseSqlite($"Data Source=..\\Db\\orders.db");
 		}
 
 		public OrderContext(DbContextOptions<OrderContext> options)

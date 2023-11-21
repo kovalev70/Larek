@@ -45,6 +45,9 @@ namespace OrderService.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("NeedForDelivery")
+                        .HasColumnType("INTEGER");
+
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("TEXT");
 

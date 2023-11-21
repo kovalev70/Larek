@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Services;
 using OrderService.Data;
-using OrderService.Interfaces;
 using OrderService.Model;
 using System.Net.Http;
 using System;
 using System.Threading.Tasks;
+using Abstracts;
 
 namespace OrderService.Repositories
 {
 	public class ProductRepository
 	{
-		public static async Task<List<IProduct>> GetProducts()
+		public static async Task<List<Product>> GetProducts()
 		{
 			using (var client = new HttpClient())
 			{
@@ -21,7 +21,7 @@ namespace OrderService.Repositories
 
 				if (response.IsSuccessStatusCode)
 				{
-					var responseData = await response.Content.ReadFromJsonAsync<List<IProduct>>();
+					var responseData = await response.Content.ReadFromJsonAsync<List<Product>>();
 					return responseData;
 				}
 				else

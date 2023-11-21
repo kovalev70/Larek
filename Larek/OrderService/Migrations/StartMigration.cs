@@ -32,7 +32,8 @@ namespace OrderService.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TotalPrice = table.Column<decimal>(type: "TEXT", nullable: false),
-                    CustomerId = table.Column<int>(type: "INTEGER", nullable: false)
+                    CustomerId = table.Column<int>(type: "INTEGER", nullable: false),
+                    NeedForDelivery = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

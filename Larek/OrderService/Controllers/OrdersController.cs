@@ -99,7 +99,7 @@ namespace OrderService.Controllers
 		}
 
 		[HttpGet("{id}/products")]
-		public async Task<ActionResult<IEnumerable<OrdersProducts>>> GetProductsIdFromOrder(int id)
+		public async Task<ActionResult<IEnumerable<OrdersProducts>>> GetProductsIdInOrder(int id)
 		{
 			var order = await _context.Orders.FindAsync(id);
 
@@ -109,6 +109,18 @@ namespace OrderService.Controllers
 			}
 			var orderProducts = from x in _context.OrdersProducts where x.OrderId == id select x;
 			return await orderProducts.ToListAsync();
+		}
+
+		[HttpGet("{id}/{productID}/quantity")]
+		public async Task<ActionResult<int>> GetProductQuantityInOrder(int id, int productId)
+		{
+			var orderProducts = await _context.OrdersProducts.FindAsync(id, productId);
+
+			if (orderProducts == null)
+			{
+				return NotFound();
+			}
+			return orderProducts.Quantity;
 		}
 
 		[HttpPut("{id}")]

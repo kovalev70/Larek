@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogService.Migrations
 {
     [DbContext(typeof(CatalogContext))]
-    [Migration("20231116104244_StartMigration")]
+    [Migration("20231121170337_StartMigration")]
     partial class StartMigration
     {
         /// <inheritdoc />

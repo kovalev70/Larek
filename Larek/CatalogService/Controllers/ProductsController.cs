@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CatalogService.Data;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 namespace CatalogService.Controllers
 {
@@ -47,40 +48,44 @@ namespace CatalogService.Controllers
 		[HttpGet("CategoryId/{categoryId}")]
 		public async Task<ActionResult<IEnumerable<Product>>> GetProductByCategory(int categoryId)
 		{
-			var product = await _context.Products.Where(p => p.CategoryId == categoryId).ToListAsync();
+			var products = await _context.Products.Where
+				(p => p.CategoryId == categoryId).ToListAsync();
 
-			if (!_context.Products.Where(p => p.CategoryId == categoryId).Any())
+			if (!products.Any())
 			{
 				return NotFound();
 			}
 
-			return product;
+			return products;
 		}
 
 		[HttpGet("BrandId/{brandId}")]
 		public async Task<ActionResult<IEnumerable<Product>>> GetProductByBrand(int brandId)
 		{
-			var product = await _context.Products.Where(p => p.BrandId == brandId).ToListAsync();
+			var products = await _context.Products.Where
+				(p => p.BrandId == brandId).ToListAsync();
 
-			if (!_context.Products.Where(p => p.BrandId == brandId).Any())
+			if (!products.Any())
 			{
 				return NotFound();
 			}
 
-			return product;
+			return products;
 		}
 
 		[HttpGet("NamePart/{namePart}")]
 		public async Task<ActionResult<IEnumerable<Product>>> GetProductByNamePart(string namePart)
 		{
-			var product = await _context.Products.Where(p => p.Name.Contains(namePart)).ToListAsync();
+			namePart = namePart.Trim();
+			var allProducts = await _context.Products.ToListAsync();
+			var products = allProducts.Where(p => p.Name.ToLower().Contains(namePart.ToLower())).ToList();
 
-			if (!_context.Products.Where(p => p.Name.Contains(namePart)).Any())
+			if (!products.Any())
 			{
 				return NotFound();
 			}
 
-			return product;
+			return products;
 		}
 
 		[HttpPut("{id}")]
@@ -125,6 +130,67 @@ namespace CatalogService.Controllers
 			await _context.SaveChangesAsync();
 
 			return product;
+		}
+		[HttpPut("pickup")]
+		public async Task<IActionResult> PickUpProducts(int id, int quantity)
+		{
+			var product = await _context.Products.FindAsync(id);
+
+			if (product == null)
+			{
+				return NotFound();
+			}
+			product.Quantity -= quantity;
+
+			_context.Entry(product).State = EntityState.Modified;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!(_context.Products.Any(e => e.Id == id)))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
+		}
+
+		[HttpPut("add")]
+		public async Task<IActionResult> AddProducts(int id, int quantity)
+		{
+			var product = await _context.Products.FindAsync(id);
+
+			if (product == null)
+			{
+				return NotFound();
+			}
+			product.Quantity += quantity;
+
+			_context.Entry(product).State = EntityState.Modified;
+
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!(_context.Products.Any(e => e.Id == id)))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
+			return NoContent();
 		}
 	}
 }
