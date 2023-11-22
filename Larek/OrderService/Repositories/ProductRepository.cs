@@ -5,7 +5,6 @@ using OrderService.Model;
 using System.Net.Http;
 using System;
 using System.Threading.Tasks;
-using Abstracts;
 
 namespace OrderService.Repositories
 {

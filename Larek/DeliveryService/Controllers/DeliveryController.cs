@@ -109,6 +109,7 @@ namespace DeliveryService.Controllers
 						(productId,productOrder.Quantity);
 				}
 				delivery.Delivered = true;
+				await _context.SaveChangesAsync();
 				return Ok("Delivery is successful");
 			}
 
