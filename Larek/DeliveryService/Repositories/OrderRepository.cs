@@ -7,29 +7,6 @@ namespace DeliveryService.Repositories
 {
 	public static class OrderRepository
 	{
-		public static async Task<List<Order>> GetOrders()
-		{
-			using (var client = new HttpClient())
-			{
-				string apiUrl = "https://localhost:5053/api/orders/";
-
-				HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-				if (response.IsSuccessStatusCode)
-				{
-					var responseData = (await response.Content.ReadFromJsonAsync<List<Order>>())
-						.Where(p => p.NeedForDelivery == true).ToList();
-
-					return responseData;
-				}
-				else
-				{
-					return null;
-				}
-
-			}
-		}
-
 		public static async Task<bool> PickUpProducts(int productId, int quantity)
 		{
 			using (var client = new HttpClient())
@@ -65,27 +42,6 @@ namespace DeliveryService.Repositories
 				else
 				{
 					return null;
-				}
-
-			}
-		}
-		public static async Task<int> GetProductQuantityInOrder(int orderId, int productId)
-		{
-			using (var client = new HttpClient())
-			{
-				string apiUrl = $"https://localhost:5053/api/orders/{orderId}/{productId}/quantity";
-
-				HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-				if (response.IsSuccessStatusCode)
-				{
-					var responseData = await response.Content.ReadFromJsonAsync<int>();
-
-					return responseData;
-				}
-				else
-				{
-					return 0;
 				}
 
 			}
