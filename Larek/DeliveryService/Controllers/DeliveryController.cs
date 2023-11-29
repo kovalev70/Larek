@@ -47,13 +47,15 @@ namespace DeliveryService.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> PutDelivery(int id, Delivery delivery)
+		public async Task<IActionResult> PutOrderInDelivery(int id, int orderId)
 		{
-			if (id != delivery.Id)
-			{
-				return BadRequest();
-			}
+			var delivery = await _context.Deliveries.FindAsync(id);
 
+			if (delivery == null)
+			{
+				return NotFound();
+			}
+			delivery.OrderId = orderId;
 			_context.Entry(delivery).State = EntityState.Modified;
 
 			try
@@ -90,7 +92,7 @@ namespace DeliveryService.Controllers
 			return delivery;
 		}
 
-		[HttpPut]
+		[HttpPut("result")]
 		public async Task<IActionResult> DeliveryResult(int deliveryId, bool result)
 		{
 			var delivery = await _context.Deliveries.FindAsync(deliveryId);
