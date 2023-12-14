@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Data;
+using OrderService.Interfaces;
 using OrderService.Model;
-using OrderService.Repositories;
+using OrderService.Services;
 
 namespace OrderService.Controllers
 {
@@ -13,8 +14,11 @@ namespace OrderService.Controllers
 	{
 		private readonly OrderContext _context;
 
-		public OrdersController(OrderContext context)
+		private readonly ICatalogService _catalogService;
+
+		public OrdersController(OrderContext context, ICatalogService catalogService)        
 		{
+			_catalogService = catalogService;
 			_context = context;
 		}
 
@@ -43,12 +47,12 @@ namespace OrderService.Controllers
 				return NotFound();
 			}
 
-			var products = await ProductRepository.GetProducts();
-			var product = products.Where(product => product.Id == productId).FirstOrDefault();
-			if (products.Where(product => product.Id == productId).Count() == 0)
+			var product = await _catalogService.GetProductAsync(productId);
+
+			if (product == null)
 			{
-				return BadRequest();
-			}	
+				return NotFound();
+			}
 
 			if (_context.OrdersProducts.Any(x => x.ProductId == productId && x.OrderId == id) == false) 
 			{

@@ -1,9 +1,8 @@
 ﻿using DeliveryService.Data;
 using DeliveryService.Model;
-using DeliveryService.Repositories;
+using DeliveryService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace DeliveryService.Controllers
 {
@@ -13,9 +12,18 @@ namespace DeliveryService.Controllers
 	{
 		private readonly DeliveryContext _context;
 
-		public DeliveryController(DeliveryContext context)
+		private readonly IOrderService _orderService;
+
+		private readonly ICatalogService _catalogService;
+
+		public DeliveryController(
+			DeliveryContext context, 
+			ICatalogService catalogService, 
+			IOrderService orderService)
 		{
 			_context = context;
+			_catalogService = catalogService;
+			_orderService = orderService;
 		}
 
 		[HttpPost]
@@ -103,11 +111,11 @@ namespace DeliveryService.Controllers
 
 			if (result)
 			{
-				var productOrders = OrderRepository.GetProductsIdFromOrder(delivery.OrderId).Result;
+				var productOrders = _orderService.GetProductsIdFromOrder(delivery.OrderId).Result;
 				foreach (var productOrder in productOrders)
 				{
 					var productId = productOrder.ProductId;
-					await OrderRepository.PickUpProducts
+					await _catalogService.PickUpProducts
 						(productId,productOrder.Quantity);
 				}
 				delivery.Delivered = true;
